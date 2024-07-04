@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 export enum ModalSizeEnum {
   XLARGE = "XLARGE",
@@ -11,21 +12,22 @@ export enum ModalSizeEnum {
 export interface ModalProps {
   children: JSX.Element;
   size?: string;
-  img?: string;
+  withConfetti?: boolean;
   imgStyle?: string;
   extraClasses?: string;
+  isOpen: boolean;
 }
 
 export function Modal({
   children,
   size = ModalSizeEnum.LARGE,
-  img,
-  imgStyle,
+  isOpen,
   extraClasses = "",
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalAnimationDone, setIsModalAnimationDone] =
     useState<boolean>(false);
+  const DIV = motion.div;
 
   const getModalSizeClass = (): string => {
     switch (size) {
@@ -78,31 +80,29 @@ export function Modal({
   return (
     <>
       {/* <!--Overlay Effect--> */}
-      <div className="z-9999 fixed inset-0 min-h-full overflow-hidden bg-white/5 backdrop-blur-md dark:bg-black/30 dark:backdrop-blur-lg" />
+      <motion.div
+        initial={false}
+        animate={isOpen ? { scale: 1 } : { scale: [1, 2.5, 0] }}
+        exit={isOpen ? { scale: 1 } : { scale: 0 }}
+        transition={{ duration: 0.4 }}
+        className="z-9999 fixed inset-0 min-h-full overflow-hidden bg-white/5 backdrop-blur-md dark:bg-black/30 dark:backdrop-blur-lg"
+      />
 
-      <div
-        className="z-9999 fixed inset-0 flex h-full w-full items-center justify-center overflow-hidden bg-gray-600/50 dark:bg-black/50"
-        id={`my-modal-${Math.random()}`}
+      <motion.div
+        animate={isOpen ? { scale: 1 } : { scale: [1, 2.5, 0] }}
+        initial={false}
+        transition={{ duration: 0.4 }}
+        exit={{ scale: [0] }}
+        className="z-9999 fixed inset-0 flex h-full w-full items-center justify-center overflow-hidden"
         ref={modalRef}
       >
         <div
-          className={`max-h-800 !bg-modal-color relative bottom-0 mx-auto mt-10 w-11/12 max-w-lg rounded-2xl p-5 shadow-lg transition-all duration-500 sm:p-8 ${getModalSizeClass()} dark:bg-dark border bg-white dark:border-0 ${
-            img ? "" : "overflow-y-auto"
-          } ${isModalAnimationDone ? "scale-100" : "scale-0"} ${extraClasses}`}
+          className={`max-h-800 !bg-slate-700 relative bottom-0 mx-auto mt-10 w-11/12 max-w-lg rounded-2xl p-5 shadow-lg transition-all duration-500 sm:p-8 ${getModalSizeClass()} dark:bg-dark border bg-white dark:border-0
+          ${extraClasses}`}
         >
-          {img && (
-            <div className={`${imgStyle} absolute z-10 mt-10 bg-transparent`}>
-              <img
-                src={img}
-                alt="badge"
-                loading="lazy"
-                className="h-full w-full object-contain"
-              />
-            </div>
-          )}
           {children}
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

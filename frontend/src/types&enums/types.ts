@@ -9,3 +9,8 @@ export type LocalStorageUserDataType = {
   token?: string;
   username?: string;
 };
+
+export type MessageFromServer = {
+  username: string;
+  message: string;
+};

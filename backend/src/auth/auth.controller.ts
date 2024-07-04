@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @Post('/login')
-  signin(@Body() body: Login) {
+  login(@Body() body: Login) {
     return this.authService?.login(body);
   }
 

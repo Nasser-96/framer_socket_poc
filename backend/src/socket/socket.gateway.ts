@@ -35,6 +35,8 @@ export class AppGateway
     this.server.emit(eventName, eventData);
   }
 
-  @SubscribeMessage('on_event_happen_do_this')
-  handleEventHappen(client: SocketWithAuth, payload: any) {}
+  @SubscribeMessage('sendMessage')
+  handleEventHappen(client: SocketWithAuth, payload: any) {
+    client.broadcast.emit('messageFromUser', payload);
+  }
 }

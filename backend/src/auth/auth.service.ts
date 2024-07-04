@@ -26,7 +26,7 @@ export class AuthService {
   ) {}
 
   async signup({ username, password }: SignupParams) {
-    const userExists = await this.prismaService.user.findUnique({
+    const userExists = await this.prismaService.user_data.findUnique({
       where: {
         username,
       },
@@ -43,7 +43,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await this.prismaService?.user.create({
+    const user = await this.prismaService?.user_data.create({
       data: {
         username: username,
         password: hashedPassword,
@@ -53,6 +53,7 @@ export class AuthService {
     const token = await this.generateJWT(user?.username, user.id);
 
     return ReturnResponse({
+      is_successful: true,
       response: { user_token: token },
       success: 'User Created Successfully',
     });
@@ -69,7 +70,7 @@ export class AuthService {
   }
 
   async login({ username, password }: LoginParams) {
-    const getUserByEmail = await this.prismaService.user.findUnique({
+    const getUserByEmail = await this.prismaService.user_data.findUnique({
       where: {
         username,
       },
@@ -108,7 +109,7 @@ export class AuthService {
     const decodedData = this.jwtService.verify(token, {
       secret: process.env.JSON_TOKEN_KEY,
     });
-    await this.prismaService.user.update({
+    await this.prismaService.user_data.update({
       where: { id: decodedData.id },
       data: { username: newName },
     });
