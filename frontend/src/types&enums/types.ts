@@ -14,3 +14,7 @@ export type MessageFromServer = {
   username: string;
   message: string;
 };
+
+export type LiveKitGetTokenType = {
+  token: string;
+};

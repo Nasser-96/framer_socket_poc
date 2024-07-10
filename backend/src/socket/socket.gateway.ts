@@ -37,6 +37,7 @@ export class AppGateway
 
   @SubscribeMessage('sendMessage')
   handleEventHappen(client: SocketWithAuth, payload: any) {
-    client.broadcast.emit('messageFromUser', payload);
+    client.broadcast.emit('messageFromUser', payload); // (broadcast) this will emit to all connected sockets except the client
+    // this.server.to(client.id).emit('messageFromUser',payload) // this will emit only to one client that has id form socket
   }
 }
