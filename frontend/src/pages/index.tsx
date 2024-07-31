@@ -1,5 +1,6 @@
 import Button from "@/components/shared/button";
 import Modal from "@/components/shared/modal";
+import NavigateButtons from "@/components/shared/navigate-buttons";
 import useSocket from "@/socket/socket";
 import useUserStore from "@/stores/user-store";
 import { MessageFromServer } from "@/types&enums/types";
@@ -83,6 +84,7 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col justify-end">
+      <NavigateButtons />
       <div
         ref={messagesRef}
         className="overflow-y-scroll h-full border border-slate-800 rounded-lg m-3 px-4 py-2"
