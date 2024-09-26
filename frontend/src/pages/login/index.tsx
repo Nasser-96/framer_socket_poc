@@ -1,8 +1,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { loginService } from "../../model/services";
-import useUserStore from "../../stores/user-store";
-import { ReturnResponseType } from "@/types&enums/types";
+import { loginService } from "../../core/model/services";
+import useUserStore from "@/core/stores/user-store";
+import { ReturnResponseType } from "@/core/types&enums/types";
 
 export default function Login() {
   const [username, setUsername] = useState<string>("");

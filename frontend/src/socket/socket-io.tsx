@@ -1,8 +1,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
-import useUserStore from "../stores/user-store";
-import GetBackendUrl from "@/helpers/backend-url";
+import useUserStore from "@/core/stores/user-store";
+import GetBackendUrl from "@/core/helpers/backend-url";
 
 export interface SocketStateType {
   socket: Socket | null;

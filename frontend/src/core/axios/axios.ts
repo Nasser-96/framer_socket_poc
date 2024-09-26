@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AxiosMethods } from "../types&enums/enums";
-import GetBackendUrl from "@/helpers/backend-url";
+import GetBackendUrl from "@/core/helpers/backend-url";
 
 const axiosObject = axios.create();
 

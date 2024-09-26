@@ -1,6 +1,9 @@
-import { getLiveKitToken } from "@/model/services";
-import useUserStore from "@/stores/user-store";
-import { LiveKitGetTokenType, ReturnResponseType } from "@/types&enums/types";
+import { getLiveKitToken } from "@/core/model/services";
+import useUserStore from "@/core/stores/user-store";
+import {
+  LiveKitGetTokenType,
+  ReturnResponseType,
+} from "@/core/types&enums/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoMdMic } from "react-icons/io";
@@ -107,42 +110,26 @@ export default function LiveKit() {
       livKitToken
     );
 
-    const localTracks = await createLocalTracks({
-      audio: true,
-      video: false,
-    });
-    setIsMicOn(true);
-    setIsVideoOn(false);
-
-    localTracks.forEach((track) => {
-      if (localVideoRef.current) {
-        if (track.kind === "video") {
-          setVideoTrack(track as LocalVideoTrack);
-        }
-        if (track.kind === "audio") {
-          setAudioTrack(track as LocalAudioTrack);
-        }
-        track.attach(localVideoRef.current);
-      }
-      room.localParticipant.publishTrack(track);
-      setConnectedRoom(room);
-      setIsJoined(true);
-    });
+    setConnectedRoom(room);
+    setIsJoined(true);
   };
 
   const addVideoTrack = async () => {
-    const videoTracks = await createLocalTracks({
-      video: true,
-    });
+    try {
+      const videoTracks = await createLocalTracks({
+        video: true,
+        audio: isMicOn,
+      });
 
-    videoTracks.forEach((track) => {
-      if (track.kind === "video" && localVideoRef.current) {
-        setVideoTrack(track as LocalVideoTrack);
-        track.attach(localVideoRef.current);
-        connectedRoom?.localParticipant.publishTrack(track);
-        setIsVideoOn(true);
-      }
-    });
+      videoTracks.forEach((track) => {
+        if (track.kind === "video" && localVideoRef.current) {
+          setVideoTrack(track as LocalVideoTrack);
+          track.attach(localVideoRef.current);
+          connectedRoom?.localParticipant.publishTrack(track);
+          setIsVideoOn(true);
+        }
+      });
+    } catch (error) {}
   };
 
   const toggleVideo = () => {
@@ -159,7 +146,27 @@ export default function LiveKit() {
     }
   };
 
-  const toggleAudio = () => {
+  const addAudioTrack = async () => {
+    try {
+      const localTracks = await createLocalTracks({
+        audio: true,
+        video: isVideoOn, // by default it is true so we have too add the value here
+      });
+
+      localTracks.forEach((track) => {
+        if (localVideoRef.current) {
+          if (track.kind === "audio") {
+            setAudioTrack(track as LocalAudioTrack);
+          }
+          track.attach(localVideoRef.current);
+        }
+        connectedRoom?.localParticipant.publishTrack(track);
+        setIsMicOn(true);
+      });
+    } catch (error) {}
+  };
+
+  const toggleAudio = async () => {
     if (audioTrack) {
       if (audioTrack.isMuted) {
         audioTrack.unmute();
@@ -168,6 +175,8 @@ export default function LiveKit() {
         setIsMicOn(false);
         audioTrack.mute();
       }
+    } else {
+      addAudioTrack();
     }
   };
 

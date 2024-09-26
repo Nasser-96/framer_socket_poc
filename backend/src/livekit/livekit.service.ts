@@ -2,12 +2,6 @@
 import { Injectable } from '@nestjs/common';
 import { AccessToken } from 'livekit-server-sdk';
 import ReturnResponse from 'src/helper/returnResponse';
-
-let accessToken: AccessToken;
-eval(`import('livekit-server-sdk')`).then((module) => {
-  accessToken = module.default;
-});
-
 @Injectable()
 export class LivekitService {
   constructor() {}
@@ -15,11 +9,14 @@ export class LivekitService {
   async createAccessToken(identity: string, roomName: string) {
     const module = await eval(`import('livekit-server-sdk')`);
 
+    const additionalData = { username_form_server: identity, blah: 'blah' };
+
     const at = new module.AccessToken(
       process.env.LIVEKIT_API_KEY,
       process.env.LIVEKIT_SECRET_KEY,
       {
         identity,
+        metadata: JSON.stringify(additionalData),
       },
     ) as AccessToken;
 

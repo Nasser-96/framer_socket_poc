@@ -1,13 +1,15 @@
 import Button from "@/components/shared/button";
 import Modal from "@/components/shared/modal";
 import NavigateButtons from "@/components/shared/navigate-buttons";
-import useSocket from "@/socket/socket";
-import useUserStore from "@/stores/user-store";
-import { MessageFromServer } from "@/types&enums/types";
+import useSocket from "@/socket/socket-io";
+import useUserStore from "@/core/stores/user-store";
+import { MessageFromServer } from "@/core/types&enums/types";
 import { useEffect, useRef, useState } from "react";
+import useWebSocket from "@/socket/web-socket";
 
 export default function Home() {
   const { socket } = useSocket();
+  const { socket: webSocket } = useWebSocket();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageFromServer[]>([]);
@@ -82,6 +84,14 @@ export default function Home() {
     };
   }, [socket]);
 
+  useEffect(() => {
+    if (webSocket?.onmessage) {
+      webSocket.onmessage = (event) => {
+        console.log(event);
+      };
+    }
+  }, [webSocket]);
+
   return (
     <div className="h-screen flex flex-col justify-end">
       <NavigateButtons />
@@ -103,6 +113,7 @@ export default function Home() {
           <Button onClick={() => SendMessageToServer()}>Send Message</Button>
           <input
             type="text"
+            title="message"
             onKeyDown={(e) =>
               e.key.toLowerCase() === "enter" && SendMessageToServer()
             }
