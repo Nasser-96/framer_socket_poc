@@ -2,6 +2,7 @@ import {
   BadGatewayException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import ReturnResponse from 'src/helper/returnResponse';
 import * as bcrypt from 'bcryptjs';
@@ -77,7 +78,7 @@ export class AuthService {
     });
 
     if (!getUserByEmail) {
-      throw new BadGatewayException(
+      throw new NotFoundException(
         ReturnResponse({
           error_msg: 'Username or Password incorrect',
           is_successful: false,

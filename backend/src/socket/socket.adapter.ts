@@ -15,14 +15,13 @@ export class SocketIOAdapter extends IoAdapter {
     this.server = super.createIOServer(port, options);
 
     const jwtService = this.app.get(JwtService);
-    this.server.of('/').use(createTokenMiddleware(jwtService, this.logger));
+    this.server.of('/').use(createTokenMiddleware(jwtService));
     return this.server;
   }
 }
 
 const createTokenMiddleware =
-  (jwtService: JwtService, logger: Logger) =>
-  (socket: SocketWithAuth, next) => {
+  (jwtService: JwtService) => (socket: SocketWithAuth, next) => {
     const token =
       socket.handshake.auth.token || socket.handshake.headers['token'];
     try {

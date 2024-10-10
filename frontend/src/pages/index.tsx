@@ -9,7 +9,6 @@ import useWebSocket from "@/socket/web-socket";
 
 export default function Home() {
   const { socket } = useSocket();
-  const { socket: webSocket } = useWebSocket();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<MessageFromServer[]>([]);
@@ -83,14 +82,6 @@ export default function Home() {
       });
     };
   }, [socket]);
-
-  useEffect(() => {
-    if (webSocket?.onmessage) {
-      webSocket.onmessage = (event) => {
-        console.log(event);
-      };
-    }
-  }, [webSocket]);
 
   return (
     <div className="h-screen flex flex-col justify-end">
